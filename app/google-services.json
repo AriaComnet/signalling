@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "176101121471",
+    "project_id": "signalling-a902a",
+    "storage_bucket": "signalling-a902a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176101121471:android:e7186e0be3bdd89df1550a",
+        "android_client_info": {
+          "package_name": "com.hamidrezabashiri.signaling"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176101121471-hh5tvs71tange6cotqsc060emtd7gvlg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzaGu_zgjgT4attk0qywCvkUt410gJFSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176101121471-hh5tvs71tange6cotqsc060emtd7gvlg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

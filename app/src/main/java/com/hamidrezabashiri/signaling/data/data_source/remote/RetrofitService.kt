@@ -1,5 +1,6 @@
 package com.hamidrezabashiri.signaling.data.data_source.remote
 
+import com.hamidrezabashiri.signaling.data.model.Login
 import com.hamidrezabashiri.signaling.data.model.LookUp
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -12,11 +13,11 @@ interface RetrofitService {
 
     @POST("lookup")
     @FormUrlEncoded
-    suspend fun sendMessage(@FieldMap params: Map<String, String>): LookUp
+    suspend fun sendMessage(@FieldMap params: Map<String, String>): Response<LookUp>
 
     @POST("login")
     @FormUrlEncoded
-    suspend fun login(@FieldMap params: Map<String, String>): LookUp
+    suspend fun login(@FieldMap params: Map<String, String>): Response<Login>
 
     companion object {
         var retrofitService: RetrofitService? = null

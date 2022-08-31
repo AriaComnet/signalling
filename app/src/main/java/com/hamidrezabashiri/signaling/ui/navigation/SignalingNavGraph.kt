@@ -1,5 +1,6 @@
 package com.hamidrezabashiri.signaling.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,7 +19,7 @@ import com.hamidrezabashiri.signaling.ui.screens.lookup.LookUpViewModel
 object MainDestinations {
     const val HOME_ROUTE = "home"
     const val LOOKUP_ROUTE = "lookup"
-    const val LOGIN_ROUTE = "login"
+    const val LOGIN_ROUTE = "login/"
 }
 
 @Composable
@@ -44,14 +45,17 @@ fun SignalingNavGraph(
 
             LookUpScreen(
                 viewModel = viewModel,
-                navigateToLogin = actions.navigateToLogin
+                navController
             )
         }
-        composable(route = "login") {
+        composable(route = "login/{phone}/{temp_token}") {
             val viewModel: LoginViewModel = viewModel {
                 LoginViewModel(repository)
             }
-            LoginScreen(viewModel = viewModel)
+            LoginScreen(
+                viewModel = viewModel,
+                it
+            )
         }
 
     }
