@@ -1,25 +1,28 @@
 package com.hamidrezabashiri.signaling.ui.screens.lookup
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import com.hamidrezabashiri.signaling.utils.NetworkResult
 
+@SuppressLint("ShowToast")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LookUpScreen(viewModel: LookUpViewModel, navController: NavHostController) {
+fun LookUpScreen(
+    viewModel: LookUpViewModel,
+    navigateToLogin: (phone: String, tempToken: String) -> Unit
+) {
 
-    val tempLookUpToken by viewModel.tempToken.observeAsState()
-    val phoneNumber = viewModel.phoneNumber.collectAsState()
-    var isNavigated by rememberSaveable{ mutableStateOf(false)}
+    val response by viewModel.response
+    val phoneNumber by viewModel.phoneNumber.collectAsState()
+    var isNavigated by rememberSaveable { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -27,7 +30,7 @@ fun LookUpScreen(viewModel: LookUpViewModel, navController: NavHostController) {
         modifier = Modifier.fillMaxSize()
     ) {
         TextField(
-            value = phoneNumber.value,
+            value = phoneNumber,
             onValueChange = viewModel::setPhoneNumber,
             modifier = Modifier
                 .padding(16.dp)
@@ -36,18 +39,37 @@ fun LookUpScreen(viewModel: LookUpViewModel, navController: NavHostController) {
         Button(modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(), onClick = {
-            viewModel.lookup()
+            viewModel.onSendButtonClick()
         }) {
-            Text(text = "Send")
+            when (response) {
+                is NetworkResult.Success<*> -> {
+                    LaunchedEffect(key1 = Unit) {
+                        if (!isNavigated) {
+                            navigateToLogin(
+                                phoneNumber,
+                                response.data?.data?.temporaryToken.toString()
+                            )
+                            isNavigated = true
+                        }
+                    }
+                    Text(text = "Send")
+
+                }
+                is NetworkResult.Error<*> -> {
+                    Log.i("TAG", "eeeee: " + response.message)
+                    Text(text = "Error")
+
+                }
+                is NetworkResult.Loading<*> -> {
+                    CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp)
+                }
+                else -> {
+                    Text(text = "Send")
+                }
+            }
         }
 
     }
-    if (!isNavigated){
-        if (tempLookUpToken?.data?.temporaryToken != null) {
-            navController.navigate(
-                "login/" + phoneNumber.value + "/" + tempLookUpToken?.data?.temporaryToken
-            )
-            isNavigated=true
-        }
-    }
+
+
 }

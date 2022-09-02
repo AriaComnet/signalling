@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 data class DataLookUp(
 
     @SerializedName("temporary_token")
-    @Expose
     var temporaryToken: String? = null
 
 )

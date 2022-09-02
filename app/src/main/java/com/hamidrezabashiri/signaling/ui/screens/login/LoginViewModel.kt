@@ -1,10 +1,12 @@
 package com.hamidrezabashiri.signaling.ui.screens.login
 
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hamidrezabashiri.signaling.data.model.Login
 import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepositoryImpl
+import com.hamidrezabashiri.signaling.utils.NetworkResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -12,10 +14,7 @@ import kotlinx.coroutines.launch
 class LoginViewModel(private val repository: AuthenticationRepositoryImpl) : ViewModel() {
 
 
-    val errorMessage = MutableLiveData<String>()
-
-    private val _tempToken = MutableLiveData<Login?>()
-    val tempToken: MutableLiveData<Login?> = _tempToken
+    val response: MutableState<NetworkResult<Login?>> = mutableStateOf(NetworkResult.NotInitiated())
 
     private val _code = MutableStateFlow("")
     val code = _code.asStateFlow()
@@ -23,32 +22,22 @@ class LoginViewModel(private val repository: AuthenticationRepositoryImpl) : Vie
         _code.value = phoneNumber
     }
 
-    val loading = MutableLiveData<Boolean>()
 
-    fun login(phoneNumber: String, tempToken: String) {
+    fun onLoginButtonClick(phoneNumber: String, tempToken: String) {
         val params: MutableMap<String, String> = HashMap()
         params["phone"] = phoneNumber
         params["code"] = code.value
         params["temp_user_token"] = tempToken
 
         viewModelScope.launch {
-            val response = repository.login(params)
-
-            if (response.isSuccessful) {
-                _tempToken.postValue(response.body())
-                loading.value = false
-
+            val res = repository.login(params)
+            if (res.isSuccessful) {
+                response.value = NetworkResult.Success(res.body())
             } else {
-                onError("Error : ${response.body()?.message} ")
-
+                response.value =
+                    NetworkResult.Error(res.message() + "  +  " + res.errorBody().toString())
             }
         }
-    }
-
-
-    private fun onError(message: String) {
-        errorMessage.value = message
-        loading.value = false
     }
 
     override fun onCleared() {

@@ -1,6 +1,5 @@
 package com.hamidrezabashiri.signaling.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -11,6 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hamidrezabashiri.signaling.data.data_source.remote.RetrofitService
 import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepositoryImpl
+import com.hamidrezabashiri.signaling.ui.screens.home.HomeScreen
+import com.hamidrezabashiri.signaling.ui.screens.home.HomeViewModel
 import com.hamidrezabashiri.signaling.ui.screens.login.LoginScreen
 import com.hamidrezabashiri.signaling.ui.screens.login.LoginViewModel
 import com.hamidrezabashiri.signaling.ui.screens.lookup.LookUpScreen
@@ -19,7 +20,7 @@ import com.hamidrezabashiri.signaling.ui.screens.lookup.LookUpViewModel
 object MainDestinations {
     const val HOME_ROUTE = "home"
     const val LOOKUP_ROUTE = "lookup"
-    const val LOGIN_ROUTE = "login/"
+    const val LOGIN_ROUTE = "login"
 }
 
 @Composable
@@ -38,14 +39,14 @@ fun SignalingNavGraph(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(route = "lookup") {
+        composable(route = MainDestinations.LOOKUP_ROUTE) {
             val viewModel: LookUpViewModel = viewModel {
                 LookUpViewModel(repository)
             }
 
             LookUpScreen(
                 viewModel = viewModel,
-                navController
+                actions.navigateToLogin
             )
         }
         composable(route = "login/{phone}/{temp_token}") {
@@ -54,8 +55,15 @@ fun SignalingNavGraph(
             }
             LoginScreen(
                 viewModel = viewModel,
-                it
+                it,
+                actions.navigateToHome
             )
+        }
+        composable(route = "home/{token}") {
+            val viewModel: HomeViewModel = viewModel() {
+                HomeViewModel(repository)
+            }
+            HomeScreen(viewModel, it)
         }
 
     }
@@ -63,12 +71,12 @@ fun SignalingNavGraph(
 }
 
 class MainActions(navController: NavHostController) {
-    val navigateToHome: () -> Unit = {
+    val navigateToHome: (token: String) -> Unit = {
         navController.popBackStack()
-        navController.navigate(MainDestinations.HOME_ROUTE)
+        navController.navigate(MainDestinations.HOME_ROUTE + "/" + it)
     }
-    val navigateToLogin: () -> Unit = {
-        navController.navigate(MainDestinations.LOGIN_ROUTE)
+    val navigateToLogin: (phone: String, tempToken: String) -> Unit = { it, it2 ->
+        navController.navigate(MainDestinations.LOGIN_ROUTE + "/" + it + "/" + it2)
     }
     val upPress: () -> Unit = {
         navController.navigateUp()

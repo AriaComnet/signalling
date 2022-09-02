@@ -23,7 +23,6 @@ class MessagingService() : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.i("TAG", "onNewToken: "+token)
 
     }
 

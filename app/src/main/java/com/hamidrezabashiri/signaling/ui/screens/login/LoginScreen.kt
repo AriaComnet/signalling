@@ -2,25 +2,28 @@ package com.hamidrezabashiri.signaling.ui.screens.login
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
+import com.hamidrezabashiri.signaling.utils.NetworkResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navBackStack: NavBackStackEntry) {
+fun LoginScreen(
+    viewModel: LoginViewModel,
+    navBackStack: NavBackStackEntry,
+    navigateToHome: (token: String) -> Unit,
+) {
 
-    val tempLoginToken by viewModel.tempToken.observeAsState()
+    val response by viewModel.response
     val code = viewModel.code.collectAsState()
+    var isNavigated by rememberSaveable { mutableStateOf(false) }
+
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -38,17 +41,37 @@ fun LoginScreen(viewModel: LoginViewModel, navBackStack: NavBackStackEntry) {
             .padding(16.dp)
             .fillMaxWidth(), onClick = {
             navBackStack.arguments?.getString("temp_token")?.let {
-                viewModel.login(
+                viewModel.onLoginButtonClick(
                     navBackStack.arguments?.getString("phone")!!,
                     it
                 )
             }
+
         }) {
-            Text(text = "Send Code")
+            when (response) {
+                is NetworkResult.Success<*> -> {
+                    LaunchedEffect(key1 = Unit) {
+                        if (!isNavigated) {
+                            response.data?.data?.token?.let { navigateToHome(it) }
+                            isNavigated = true
+                        }
+                    }
+                    Text(text = "Send Code")
+
+                }
+                is NetworkResult.Error<*> -> {
+                    Log.i("TAG", "error: " + response.message)
+                    Text(text = "Error")
+
+                }
+                is NetworkResult.Loading<*> -> {
+                    CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp)
+                }
+                else -> {
+                    Text(text = "Send Code")
+                }
+            }
         }
-        if (tempLoginToken?.data?.token != null) {
-            Log.i("TAG", "looo: " + tempLoginToken?.data?.token)
-            Log.i("TAG", "looo: " + tempLoginToken?.message)
-        }
+
     }
 }
