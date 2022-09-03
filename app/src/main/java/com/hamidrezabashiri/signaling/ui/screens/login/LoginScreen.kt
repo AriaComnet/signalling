@@ -9,17 +9,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.hamidrezabashiri.signaling.utils.NetworkResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
     navBackStack: NavBackStackEntry,
     navigateToHome: (token: String) -> Unit,
 ) {
-
+    val viewModel = hiltViewModel<LoginViewModel>()
     val response by viewModel.response
     val code = viewModel.code.collectAsState()
     var isNavigated by rememberSaveable { mutableStateOf(false) }

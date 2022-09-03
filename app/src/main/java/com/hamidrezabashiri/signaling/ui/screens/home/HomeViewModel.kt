@@ -1,7 +1,10 @@
 package com.hamidrezabashiri.signaling.ui.screens.home
 
 import androidx.lifecycle.ViewModel
-import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepositoryImpl
+import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HomeViewModel(repository: AuthenticationRepositoryImpl) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(repository: AuthenticationRepository) : ViewModel() {
 }

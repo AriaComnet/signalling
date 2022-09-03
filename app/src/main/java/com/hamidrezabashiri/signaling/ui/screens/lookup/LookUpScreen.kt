@@ -10,16 +10,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hamidrezabashiri.signaling.utils.NetworkResult
+import dagger.hilt.android.AndroidEntryPoint
 
 @SuppressLint("ShowToast")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LookUpScreen(
-    viewModel: LookUpViewModel,
     navigateToLogin: (phone: String, tempToken: String) -> Unit
 ) {
-
+    val viewModel = hiltViewModel<LookUpViewModel>()
     val response by viewModel.response
     val phoneNumber by viewModel.phoneNumber.collectAsState()
     var isNavigated by rememberSaveable { mutableStateOf(false) }

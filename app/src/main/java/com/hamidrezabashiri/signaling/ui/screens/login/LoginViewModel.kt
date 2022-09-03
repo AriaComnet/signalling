@@ -5,13 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hamidrezabashiri.signaling.data.model.Login
-import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepositoryImpl
+import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepository
 import com.hamidrezabashiri.signaling.utils.NetworkResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(private val repository: AuthenticationRepositoryImpl) : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val repository: AuthenticationRepository) :
+    ViewModel() {
 
 
     val response: MutableState<NetworkResult<Login?>> = mutableStateOf(NetworkResult.NotInitiated())

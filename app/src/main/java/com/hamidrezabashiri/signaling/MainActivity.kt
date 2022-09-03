@@ -19,7 +19,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.hamidrezabashiri.signaling.ui.navigation.MainDestinations
 import com.hamidrezabashiri.signaling.ui.navigation.SignalingNavGraph
 import com.hamidrezabashiri.signaling.ui.theme.SignalingTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

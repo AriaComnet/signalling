@@ -5,13 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hamidrezabashiri.signaling.data.model.LookUp
-import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepositoryImpl
+import com.hamidrezabashiri.signaling.data.repository.AuthenticationRepository
 import com.hamidrezabashiri.signaling.utils.NetworkResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LookUpViewModel(private val repositoryImpl: AuthenticationRepositoryImpl) : ViewModel() {
+@HiltViewModel
+class LookUpViewModel @Inject constructor( private val repository: AuthenticationRepository) : ViewModel() {
 
 
     val response: MutableState<NetworkResult<LookUp?>> =
@@ -33,7 +36,7 @@ class LookUpViewModel(private val repositoryImpl: AuthenticationRepositoryImpl) 
             response.value = NetworkResult.Error("enter phone number")
         }
         viewModelScope.launch {
-            val res = repositoryImpl.lookUp(params)
+            val res = repository.lookUp(params)
             if (res.isSuccessful) {
                 response.value = NetworkResult.Success(res.body())
             } else {
