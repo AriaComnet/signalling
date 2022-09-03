@@ -1,6 +1,8 @@
 package com.hamidrezabashiri.signaling.di
 
 import com.hamidrezabashiri.signaling.data.data_source.remote.ApiService
+import com.hamidrezabashiri.signaling.data.data_source.remote.SocketService
+import com.hamidrezabashiri.signaling.data.firebase.MessagingService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -76,4 +78,14 @@ object NetworkModule {
     fun provideRestApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
+
+    /**
+     * Provides Socket Service
+     */
+    @Singleton
+    @Provides
+    fun provideSocketService(): SocketService {
+        return SocketService
+    }
+
 }

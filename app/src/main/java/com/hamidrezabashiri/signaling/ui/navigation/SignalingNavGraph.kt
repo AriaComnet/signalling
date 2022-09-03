@@ -44,7 +44,7 @@ fun SignalingNavGraph(
             )
         }
         composable(route = "home/{token}") {
-            HomeScreen(it)
+            HomeScreen(navController)
         }
 
     }

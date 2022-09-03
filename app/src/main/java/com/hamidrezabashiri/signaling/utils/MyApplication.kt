@@ -1,9 +1,9 @@
 package com.hamidrezabashiri.signaling.utils
 
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class MyApplication : MultiDexApplication() {
+class MyApplication : Application() {
 
 }
